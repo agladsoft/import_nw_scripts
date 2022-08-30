@@ -61,8 +61,6 @@ for dict_data in parsed_data:
                 dict_data[key] = int(value)
             elif key in ['tnved_group_id']:
                 dict_data[key] = f"{int(value):02d}"
-            elif key == 'terminal':
-                dict_data[key] = os.environ.get('XL_NW_IMPORT')
 
     dict_data['original_file_name'] = os.path.basename(input_file_path)
     dict_data['original_file_parsed_on'] = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
