@@ -47,8 +47,13 @@ def trim_all_columns(df):
     return df.applymap(trim_strings)
 
 
-df = pd.read_csv(input_file_path)
+def convert_to_int(val):
+    return int(val) if val.isdigit() else int(val in [True, 'True'])
+
+
+df = pd.read_csv(input_file_path, dtype=str)
 df = df.replace({np.nan: None})
+df = df.dropna(axis=0, how='all')
 df = df.rename(columns=headers_eng)
 df = df.loc[:, ~df.columns.isin(['direction', 'tnved_group_name', 'shipper_inn',
                                  'shipper_name_unified', 'departure_country'])]
@@ -57,10 +62,12 @@ parsed_data = df.to_dict('records')
 for dict_data in parsed_data:
     for key, value in dict_data.items():
         with contextlib.suppress(Exception):
-            if key in ['year', 'month', 'teu', 'container_size']:
-                dict_data[key] = int(value)
+            if key in ['year', 'month', 'teu', 'container_size', 'container_count']:
+                dict_data[key] = convert_to_int(value)
             elif key in ['tnved_group_id']:
                 dict_data[key] = f"{int(value)}"
+            elif key in ['goods_weight_netto']:
+                dict_data[key] = float(value)
 
     dict_data['original_file_name'] = os.path.basename(input_file_path)
     dict_data['original_file_parsed_on'] = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
