@@ -34,7 +34,7 @@ headers_eng = {
     "Страна КОМПАНИИ": "consignee_country",
     "Направление": "direction",
     "Коносамент": "consignment",
-    "Тип парка": "park_type",
+    "Тип парка": "is_empty",
     "Вес нетто (кг)": "goods_weight_netto"
 }
 
@@ -68,7 +68,7 @@ for dict_data in parsed_data:
                 dict_data[key] = f"{int(value)}"
             elif key in ['goods_weight_netto']:
                 dict_data[key] = float(value)
-            elif key in ['park_type']:
+            elif key in ['is_empty']:
                 dict_data[key] = value == 'Порожний'
 
     dict_data['original_file_name'] = os.path.basename(input_file_path)
