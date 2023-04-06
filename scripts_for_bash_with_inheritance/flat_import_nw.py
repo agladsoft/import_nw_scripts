@@ -68,6 +68,8 @@ for dict_data in parsed_data:
                 dict_data[key] = f"{int(value)}"
             elif key in ['goods_weight_netto']:
                 dict_data[key] = float(value)
+            elif key in ['park_type']:
+                dict_data[key] = value == 'Порожний'
 
     dict_data['original_file_name'] = os.path.basename(input_file_path)
     dict_data['original_file_parsed_on'] = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
