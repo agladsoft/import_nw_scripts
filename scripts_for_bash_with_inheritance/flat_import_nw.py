@@ -14,6 +14,8 @@ headers_eng = {
     "Месяц": "month",
     "Период": "period",
     "Линия": "line",
+    "Судно": "ship_name",
+    "Рейс": "voyage",
     "Порт": "tracking_seaport",
     "Страна": "departure_country",
     "Отправитель": "shipper_name",
@@ -34,7 +36,7 @@ headers_eng = {
     "Страна КОМПАНИИ": "consignee_country",
     "Направление": "direction",
     "Коносамент": "consignment",
-    "Тип парка": "is_empty",
+    "Порожний": "is_empty",
     "Вес нетто (кг)": "goods_weight_netto"
 }
 
@@ -69,9 +71,9 @@ for dict_data in parsed_data:
             elif key in ['goods_weight_netto']:
                 dict_data[key] = float(value)
             elif key in ['is_empty']:
-                dict_data[key] = value == 'Порожний'
-    dict_data['ship_name'] = 'Нет данных'
-    dict_data['voyage'] = 'Нет данных'
+                dict_data[key] = value in ['1', 1, 'да', 'Да', 'True']
+            elif key in ['ship_name', 'voyage']:
+                dict_data[key] = 'Нет данных' if value is None else value
     dict_data['original_file_name'] = os.path.basename(input_file_path)
     dict_data['original_file_parsed_on'] = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 basename = os.path.basename(input_file_path)
