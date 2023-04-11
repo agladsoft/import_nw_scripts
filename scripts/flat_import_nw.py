@@ -56,7 +56,7 @@ class ImportNW(object):
         """
         Change data types or changing values.
         """
-        with contextlib.suppress(KeyError):
+        with contextlib.suppress(Exception):
             df[['ship_name', 'voyage']] = df[['ship_name', 'voyage']].apply(lambda x: x.fillna('Нет данных'))
 
     def write_to_json(self, parsed_data) -> None:
