@@ -59,7 +59,7 @@ class ImportNW(object):
         df['original_file_name'] = os.path.basename(self.input_file_path)
         df['original_file_parsed_on'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    def write_to_json(self, parsed_data: list[dict]) -> None:
+    def write_to_json(self, parsed_data: list) -> None:
         """
         Write data to json.
         """
