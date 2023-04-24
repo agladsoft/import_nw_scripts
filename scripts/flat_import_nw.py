@@ -10,7 +10,6 @@ from datetime import datetime
 headers_eng: dict = {
     "Год": "year",
     "Месяц": "month",
-    "Период": "period",
     "Линия": "line",
     "Судно": "ship_name",
     "Рейс": "voyage",
@@ -51,7 +50,6 @@ class ImportNW(object):
         """
         with contextlib.suppress(Exception):
             df[['ship_name', 'voyage']] = df[['ship_name', 'voyage']].apply(lambda x: x.fillna('Нет данных'))
-            df['period'] = df['period'].dt.date.astype(str)
 
     def add_new_columns(self, df: DataFrame) -> None:
         """
