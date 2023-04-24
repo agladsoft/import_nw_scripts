@@ -73,7 +73,10 @@ class ImportNW(object):
         """
         df: DataFrame = pd.read_excel(self.input_file_path, dtype={"ИНН": str})
         df = df.dropna(axis=0, how='all')
+        original_columns = list(df.columns)
         df = df.rename(columns=headers_eng)
+        renamed_columns = list(df.columns)
+        df = df.drop(columns=set(original_columns) & set(renamed_columns))
         df = df.loc[:, ~df.columns.isin(['direction', 'tnved_group_name', 'shipper_inn',
                                          'shipper_name_unified', 'departure_country'])]
         df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
