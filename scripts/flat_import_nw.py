@@ -34,7 +34,7 @@ headers_eng: dict = {
     "Направление": "direction",
     "Коносамент": "consignment",
     "Порожний": "is_empty",
-    "Вес нетто (кг)": "goods_weight_netto"
+    "Вес нетто (кг)": "goods_weight_with_package"
 }
 
 
