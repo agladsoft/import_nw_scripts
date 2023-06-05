@@ -81,6 +81,7 @@ class ImportNW(object):
         self.add_new_columns(df)
         self.change_type_and_values(df)
         df = df.replace({np.nan: None, "NaT": None})
+        df["direction"] = df["direction"].replace({"импорт": "import", "экспорт": "export", "каботаж": "cabotage"})
         self.write_to_json(df.to_dict('records'))
 
 
