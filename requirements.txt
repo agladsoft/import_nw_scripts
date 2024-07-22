@@ -4,6 +4,7 @@ clickhouse-connect==0.6.13
 idna==3.7
 lz4==4.3.3
 numpy==1.24.2
+openpyxl==3.1.5
 pandas==1.4.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
