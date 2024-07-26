@@ -2,7 +2,7 @@
 
 # Declare a string array with type
 declare -a DirsArray=(
-    "flat_import_nw_tracking"
+    "flat_import_nw"
     "flat_import_nw_tracking_update"
 )
 
