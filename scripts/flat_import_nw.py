@@ -77,14 +77,16 @@ class ImportNW(object):
         original_columns = list(df.columns)
         df = df.rename(columns=headers_eng)
         renamed_columns = list(df.columns)
-        df = df.drop(columns=set(original_columns) & set(renamed_columns))
+        same_columns: set = set(original_columns) & set(renamed_columns)
+        if len(same_columns) != len(original_columns):
+            df = df.drop(columns=same_columns)
         df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
         self.add_new_columns(df)
         self.change_type_and_values(df)
         df = df.replace({np.nan: None, "NaT": None})
+        df["direction"] = df["direction"].replace({"импорт": "import", "экспорт": "export", "каботаж": "cabotage"})
         ParsedDf(df).get_port()
         df = df.replace({np.nan: None, "NaT": None})
-        df["direction"] = df["direction"].replace({"импорт": "import", "экспорт": "export", "каботаж": "cabotage"})
         self.write_to_json(df.to_dict('records'))
 
 
