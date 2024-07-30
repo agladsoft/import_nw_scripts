@@ -1,3 +1,4 @@
+import re
 import os
 import sys
 import time
@@ -75,14 +76,17 @@ class ParsedDf:
         return direction
 
     @staticmethod
-    def body(row, consignment):
-        data = {
-            'line': row.get('line'),
-            'consignment': row.get(consignment),
-            'direction': row.get('direction', 'import')
+    def get_number_consignment(consignment):
+        lst_consignment: list = list(filter(None, re.split(r",|\s", consignment)))
+        return lst_consignment[0].strip() if len(lst_consignment) > 1 else consignment
 
+    def body(self, row, consignment):
+        consignment_number = self.get_number_consignment(row.get(consignment))
+        return {
+            'line': row.get('line'),
+            'consignment': consignment_number,
+            'direction': row.get('direction', 'import'),
         }
-        return data
 
     def get_port_with_recursion(self, number_attempts: int, row, consignment) -> Optional[str]:
         if number_attempts == 0:
