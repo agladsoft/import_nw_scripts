@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 from clickhouse_connect import get_client
 from clickhouse_connect.driver import Client
 
-LINES = ['СИНОКОР РУС ООО', 'HEUNG-A LINE CO., LTD', 'MSC', 'SINOKOR', 'SINAKOR', 'SKR', 'sinokor',
-         'ARKAS', 'arkas', 'Arkas',
-         'MSC', 'msc', 'Msc', 'SINOKOR', 'sinokor', 'Sinokor', 'SINAKOR', 'sinakor', 'HUENG-A LINE',
-         'HEUNG-A LINE CO., LTD', 'heung']
+# LINES = ['СИНОКОР РУС ООО', 'HEUNG-A LINE CO., LTD', 'MSC', 'SINOKOR', 'SINAKOR', 'SKR', 'sinokor',
+#          'ARKAS', 'arkas', 'Arkas',
+#          'MSC', 'msc', 'Msc', 'SINOKOR', 'sinokor', 'Sinokor', 'SINAKOR', 'sinakor', 'HUENG-A LINE',
+#          'HEUNG-A LINE CO., LTD', 'heung']
 HEUNG_AND_SINOKOR = ['СИНОКОР РУС ООО', 'HEUNG-A LINE CO., LTD', 'SINOKOR', 'SINAKOR', 'SKR', 'sinokor', 'HUENG-A LINE',
                      'HEUNG-A LINE CO., LTD', 'heung']
 IMPORT = ['импорт', 'import']
@@ -44,14 +44,29 @@ def clickhouse_client():
     return client
 
 
-def reel_shipping_list_name():
-    reel_shipping = 'REEL SHIPPING'
+def uified_list_line_name():
     client = clickhouse_client()
-    query = client.query(f"Select line from default.reference_lines where line_unified = '{reel_shipping}'")
-    result = [i[0].upper() for i in query.result_rows] if query.result_rows else None
-    return result
+    items = {}
+    line_unified_query = client.query(
+        f"SELECT * FROM reference_lines where line_unified in ('REEL SHIPPING','SAFETRANS')")
+    line_unified = line_unified_query.result_rows
+    for data in line_unified:
+        key, value = data[1], data[0]
+        if key not in items:
+            items[key] = [value]
+        else:
+            items[key].append(value)
+    return items
 
 
+def get_line_unified(item: dict, line_name: str):
+    for key, value in item.items():
+        if line_name in value:
+            return key
+    return line_name
+
+
+LINES = uified_list_line_name()
 
 class ParsedDf:
     def __init__(self, df):
@@ -82,8 +97,9 @@ class ParsedDf:
 
     def body(self, row, consignment):
         consignment_number = self.get_number_consignment(row.get(consignment))
+        line_unified = get_line_unified(LINES, row.get('line'))
         return {
-            'line': row.get('line'),
+            'line': line_unified,
             'consignment': consignment_number,
             'direction': row.get('direction', 'import'),
         }
@@ -116,7 +132,7 @@ class ParsedDf:
         self.add_new_columns()
         logging.info("Запросы к микросервису")
         data = {}
-        lines = reel_shipping_list_name()
+        lines = [name for sublist in list(uified_list_line_name().values()) for name in sublist]
         for index, row in self.df.iterrows():
             if row.get('line', '').upper() not in lines or row.get('tracking_seaport') is not None:
                 continue
