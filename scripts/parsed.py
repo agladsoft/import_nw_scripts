@@ -71,7 +71,7 @@ LINES = uified_list_line_name()
 class ParsedDf:
     def __init__(self, df):
         self.df = df
-        self.url = f"http://{os.environ['IP_ADDRESS_CONSIGNMENTS']}:8004"
+        self.url = f"http://{os.environ['IP_ADDRESS_CONSIGNMENTS']}:{os.environ['PORT']}"
         self.headers = {
             'Content-Type': 'application/json'
         }
