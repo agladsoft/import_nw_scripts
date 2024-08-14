@@ -44,7 +44,7 @@ def clickhouse_client():
     return client
 
 
-def uified_list_line_name():
+def unified_list_line_name():
     client = clickhouse_client()
     items = {}
     line_unified_query = client.query(
@@ -132,7 +132,7 @@ class ParsedDf:
         self.add_new_columns()
         logging.info("Запросы к микросервису")
         data = {}
-        lines = [name for sublist in list(uified_list_line_name().values()) for name in sublist]
+        lines = [name for sublist in list(unified_list_line_name().values()) for name in sublist]
         for index, row in self.df.iterrows():
             if row.get('line', '').upper() not in lines or row.get('tracking_seaport') is not None:
                 continue
