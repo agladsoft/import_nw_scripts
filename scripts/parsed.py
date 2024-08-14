@@ -66,7 +66,7 @@ def get_line_unified(item: dict, line_name: str):
     return line_name
 
 
-LINES = uified_list_line_name()
+LINES = unified_list_line_name()
 
 class ParsedDf:
     def __init__(self, df):
