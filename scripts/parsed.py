@@ -5,7 +5,7 @@ import time
 import json
 import logging
 import requests
-from typing import Optional
+from typing import Optional, List
 from dotenv import load_dotenv
 from clickhouse_connect import get_client
 from clickhouse_connect.driver import Client
@@ -44,7 +44,7 @@ def clickhouse_client():
     return client
 
 
-def uified_list_line_name():
+def unified_list_line_name():
     client = clickhouse_client()
     items = {}
     line_unified_query = client.query(
@@ -66,7 +66,17 @@ def get_line_unified(item: dict, line_name: str):
     return line_name
 
 
-LINES = uified_list_line_name()
+def get_line_tracking_empty() -> List[str]:
+    client = clickhouse_client()
+    line_unified_query = client.query(
+        f"SELECT line FROM reference_lines where line_unified in ('REEL SHIPPING','HEUNG-A LINE','SINOKOR')")
+    line_unified = line_unified_query.result_rows
+    return [i[0].upper() for i in line_unified]
+
+
+LINES = unified_list_line_name()
+HEUNG_AND_SINOKOR_REEL = get_line_tracking_empty()
+
 
 class ParsedDf:
     def __init__(self, df):
@@ -78,7 +88,7 @@ class ParsedDf:
 
     @staticmethod
     def check_lines(row: dict) -> bool:
-        if row.get('line', '').upper() in HEUNG_AND_SINOKOR:
+        if row.get('line', '').upper() in HEUNG_AND_SINOKOR_REEL:
             return False
         return True
 
@@ -132,7 +142,7 @@ class ParsedDf:
         self.add_new_columns()
         logging.info("Запросы к микросервису")
         data = {}
-        lines = [name for sublist in list(uified_list_line_name().values()) for name in sublist]
+        lines = [name for sublist in list(unified_list_line_name().values()) for name in sublist]
         for index, row in self.df.iterrows():
             if row.get('line', '').upper() not in lines or row.get('tracking_seaport') is not None:
                 continue
