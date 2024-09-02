@@ -69,7 +69,7 @@ def get_line_unified(item: dict, line_name: str):
 def get_line_tracking_empty() -> List[str]:
     client = clickhouse_client()
     line_unified_query = client.query(
-        f"SELECT line FROM reference_lines where line_unified in ('REEL SHIPPING','HEUNG-A LINE','SINOKOR')")
+        f"SELECT line FROM reference_lines where line_unified in ('REEL SHIPPING','HEUNG-A LINE','SINOKOR','SAFETRANS')")
     line_unified = line_unified_query.result_rows
     return [i[0].upper() for i in line_unified]
 
