@@ -145,12 +145,9 @@ class ParsedDf:
 
     @staticmethod
     def get_consignment(row):
-        if row.get('line', '').upper() in ['ARKAS', 'MSC']:
-            return 'container_number'
-        else:
-            if 'booking' in row:
-                return 'booking'
-            return 'consignment'
+        if 'booking' in row:
+            return 'booking'
+        return 'consignment'
 
     def get_port(self):
         self.add_new_columns()
